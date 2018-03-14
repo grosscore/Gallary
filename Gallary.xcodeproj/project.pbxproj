@@ -7,23 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3414879E205192D700D04E13 /* FocalNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3414879D205192D700D04E13 /* FocalNode.swift */; };
+		34392AE620595E8B001CBFEE /* PhotoLibraryCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34392AE520595E8B001CBFEE /* PhotoLibraryCollectionViewController.swift */; };
 		346B4E6E204F19760074A6EB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346B4E6D204F19760074A6EB /* AppDelegate.swift */; };
 		346B4E70204F19760074A6EB /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 346B4E6F204F19760074A6EB /* art.scnassets */; };
-		346B4E72204F19760074A6EB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346B4E71204F19760074A6EB /* ViewController.swift */; };
+		346B4E72204F19760074A6EB /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346B4E71204F19760074A6EB /* MainViewController.swift */; };
 		346B4E75204F19760074A6EB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 346B4E73204F19760074A6EB /* Main.storyboard */; };
 		346B4E77204F19760074A6EB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 346B4E76204F19760074A6EB /* Assets.xcassets */; };
 		346B4E7A204F19760074A6EB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 346B4E78204F19760074A6EB /* LaunchScreen.storyboard */; };
+		3474B5C0204F2B4400462ECB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3474B5BF204F2B4400462ECB /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3414879D205192D700D04E13 /* FocalNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocalNode.swift; sourceTree = "<group>"; };
+		34392AE520595E8B001CBFEE /* PhotoLibraryCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryCollectionViewController.swift; sourceTree = "<group>"; };
 		346B4E6A204F19760074A6EB /* Gallary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gallary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		346B4E6D204F19760074A6EB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		346B4E6F204F19760074A6EB /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
-		346B4E71204F19760074A6EB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		346B4E71204F19760074A6EB /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		346B4E74204F19760074A6EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		346B4E76204F19760074A6EB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		346B4E79204F19760074A6EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		346B4E7B204F19760074A6EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3474B5BF204F2B4400462ECB /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,14 +63,25 @@
 			isa = PBXGroup;
 			children = (
 				346B4E6D204F19760074A6EB /* AppDelegate.swift */,
-				346B4E6F204F19760074A6EB /* art.scnassets */,
-				346B4E71204F19760074A6EB /* ViewController.swift */,
-				346B4E73204F19760074A6EB /* Main.storyboard */,
-				346B4E76204F19760074A6EB /* Assets.xcassets */,
-				346B4E78204F19760074A6EB /* LaunchScreen.storyboard */,
-				346B4E7B204F19760074A6EB /* Info.plist */,
+				346B4E71204F19760074A6EB /* MainViewController.swift */,
+				34392AE520595E8B001CBFEE /* PhotoLibraryCollectionViewController.swift */,
+				3414879D205192D700D04E13 /* FocalNode.swift */,
+				3474B5BF204F2B4400462ECB /* Extensions.swift */,
+				346B4E81204F19CE0074A6EB /* Supporting Files */,
 			);
 			path = Gallary;
+			sourceTree = "<group>";
+		};
+		346B4E81204F19CE0074A6EB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				346B4E76204F19760074A6EB /* Assets.xcassets */,
+				346B4E6F204F19760074A6EB /* art.scnassets */,
+				346B4E78204F19760074A6EB /* LaunchScreen.storyboard */,
+				346B4E73204F19760074A6EB /* Main.storyboard */,
+				346B4E7B204F19760074A6EB /* Info.plist */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,7 +157,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				346B4E72204F19760074A6EB /* ViewController.swift in Sources */,
+				34392AE620595E8B001CBFEE /* PhotoLibraryCollectionViewController.swift in Sources */,
+				346B4E72204F19760074A6EB /* MainViewController.swift in Sources */,
+				3414879E205192D700D04E13 /* FocalNode.swift in Sources */,
+				3474B5C0204F2B4400462ECB /* Extensions.swift in Sources */,
 				346B4E6E204F19760074A6EB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -281,6 +301,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = K4PWUDJ3HE;
 				INFOPLIST_FILE = Gallary/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Gallary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -296,6 +317,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = K4PWUDJ3HE;
 				INFOPLIST_FILE = Gallary/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Gallary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
