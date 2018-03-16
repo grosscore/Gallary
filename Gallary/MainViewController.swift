@@ -3,8 +3,12 @@ import SceneKit
 import ARKit
 import Photos
 
-class MainViewController: UIViewController, ARSCNViewDelegate {
+class MainViewController: UIViewController, ARSCNViewDelegate, UIPopoverPresentationControllerDelegate {
 
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var notificationLabel: EdgeInsetLabel!
     
@@ -28,6 +32,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         UIApplication.shared.isIdleTimerDisabled = true
+        UIApplication.shared.isStatusBarHidden = true
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal]
         configuration.isLightEstimationEnabled = true
@@ -113,17 +118,17 @@ class MainViewController: UIViewController, ARSCNViewDelegate {
 
     
     // MARK: - Navigation
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "photoLibrarySegue" {
-//            let popoverViewController = segue.destination as! PhotoCollectionViewController
-//            popoverViewController.modalPresentationStyle = .popover
-//            popoverViewController.modalTransitionStyle = .coverVertical
-//            popoverViewController.popoverPresentationController!.delegate = self
-//        }
-//    }
-//
-//    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
-//        return UIModalPresentationStyle.none
-//    }
-//
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "photoCollectionSegue" {
+            let popoverViewController = segue.destination as! PhotoLibraryCollectionViewController
+            popoverViewController.modalPresentationStyle = .popover
+            popoverViewController.modalTransitionStyle = .coverVertical
+            popoverViewController.popoverPresentationController!.delegate = self
+        }
+    }
+
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return UIModalPresentationStyle.none
+    }
+
 }

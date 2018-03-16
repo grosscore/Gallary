@@ -16,6 +16,7 @@
 		346B4E77204F19760074A6EB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 346B4E76204F19760074A6EB /* Assets.xcassets */; };
 		346B4E7A204F19760074A6EB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 346B4E78204F19760074A6EB /* LaunchScreen.storyboard */; };
 		3474B5C0204F2B4400462ECB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3474B5BF204F2B4400462ECB /* Extensions.swift */; };
+		34E2FAA4205A7EA2008BC426 /* ThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E2FAA3205A7EA2008BC426 /* ThumbnailCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		346B4E79204F19760074A6EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		346B4E7B204F19760074A6EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3474B5BF204F2B4400462ECB /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		34E2FAA3205A7EA2008BC426 /* ThumbnailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 				346B4E6D204F19760074A6EB /* AppDelegate.swift */,
 				346B4E71204F19760074A6EB /* MainViewController.swift */,
 				34392AE520595E8B001CBFEE /* PhotoLibraryCollectionViewController.swift */,
+				34E2FAA3205A7EA2008BC426 /* ThumbnailCell.swift */,
 				3414879D205192D700D04E13 /* FocalNode.swift */,
 				3474B5BF204F2B4400462ECB /* Extensions.swift */,
 				346B4E81204F19CE0074A6EB /* Supporting Files */,
@@ -157,6 +160,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34E2FAA4205A7EA2008BC426 /* ThumbnailCell.swift in Sources */,
 				34392AE620595E8B001CBFEE /* PhotoLibraryCollectionViewController.swift in Sources */,
 				346B4E72204F19760074A6EB /* MainViewController.swift in Sources */,
 				3414879E205192D700D04E13 /* FocalNode.swift in Sources */,
