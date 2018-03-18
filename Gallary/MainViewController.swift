@@ -15,7 +15,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, UIPopoverPresenta
     
     var focalNode: FocalNode?
     private var screenCenter:CGPoint!
-    
+    private var isPhotoLibraryAuthorized: Bool = false
     public var image: UIImage? {
         didSet {
             self.image = self.image?.fixImageOrientation()
@@ -28,7 +28,6 @@ class MainViewController: UIViewController, ARSCNViewDelegate, UIPopoverPresenta
         configureSceneView()
         setupCamera()
         screenCenter = view.center
-        choosePhotoButton.isEnabled = false
         notificationLabel.isHidden = false
         
     }
@@ -191,7 +190,13 @@ class MainViewController: UIViewController, ARSCNViewDelegate, UIPopoverPresenta
         }
     }
     
-
+    @IBAction func openLibrary(_ sender: UIButton) {
+        guard PHPhotoLibrary.authorizationStatus() == .authorized else {
+            requestPhotoLibraryAuthorization()
+            return
+        }
+    }
+    
     
 }
 

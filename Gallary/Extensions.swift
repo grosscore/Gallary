@@ -125,16 +125,15 @@ extension EdgeInsetLabel {
 
 extension MainViewController {
     
-    func requestPhotoLibraryAuthorization(){
+    func requestPhotoLibraryAuthorization() {
         
         func statusAlert() {
             let alert = UIAlertController(
                 title: "Need Authorization",
-                message: "Wouldn't you like to authorize this app " +
-                "to use your Photo library?",
+                message: "Use your photos in your own AR Gallery!",
                 preferredStyle: .alert)
             alert.addAction(UIAlertAction(
-                title: "No", style: .cancel, handler: nil))
+                title: "Deny", style: .cancel, handler: nil))
             alert.addAction(UIAlertAction(
                 title: "OK", style: .default, handler: {
                     _ in
@@ -148,14 +147,10 @@ extension MainViewController {
         switch status {
         case .authorized:
             fetchAllAssets()
-            choosePhotoButton.isEnabled = true
         case .notDetermined:
             PHPhotoLibrary.requestAuthorization() { status in
                 if status == .authorized {
                     self.fetchAllAssets()
-                    self.choosePhotoButton.isEnabled = true
-                } else {
-                    statusAlert()
                 }
             }
         case .restricted: break

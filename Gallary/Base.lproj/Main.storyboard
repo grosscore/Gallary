@@ -35,6 +35,7 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
+                                    <action selector="openLibrary:" destination="m1d-SY-G8U" eventType="touchUpInside" id="1AZ-o2-HsV"/>
                                     <segue destination="uQU-Hp-jER" kind="popoverPresentation" identifier="photoCollectionSegue" popoverAnchorView="f6T-Xg-oik" id="cBb-NV-UXE">
                                         <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                                     </segue>
