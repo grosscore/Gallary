@@ -9,43 +9,29 @@ class PhotoLibraryCollectionViewController: UICollectionViewController, UICollec
         return true
     }
     
-    var fetchResults: PHFetchResult<PHAsset>! {
+    var imageManager: PHCachingImageManager?
+    var fetchResults: PHFetchResult<PHAsset>? {
         didSet {
-            self.collectionView?.reloadData()
-            self.fetchResults.enumerateObjects { (asset, _, _) in
-                self.assets.append(asset)
-            }
-        }
-    }
-    private var assets: [PHAsset] = [] {
-        didSet {
-            self.imageManager.startCachingImages(for: self.assets, targetSize: self.itemSize!, contentMode: .aspectFit, options: nil)
+            collectionView?.reloadData()
         }
     }
     
     private var itemSize: CGSize?
-    private var thumbnailSize: CGSize?
-    private let imageManager = PHCachingImageManager()
-    private var selectedPhoto = UIImage()
+    var thumbnailSize: CGSize?
+    
+    var selectedPhoto: UIImage?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         UIApplication.shared.isStatusBarHidden = true
         updateItemSize()
-        
-        //Fetching all assets from Library:
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.includeAllBurstAssets = false
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        //fetchOptions.fetchLimit = 100
-        self.fetchResults = PHAsset.fetchAssets(with: .image, options: fetchOptions)
-        
+
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillLayoutSubviews() {
         updateItemSize()
     }
-
+    
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -53,15 +39,14 @@ class PhotoLibraryCollectionViewController: UICollectionViewController, UICollec
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fetchResults.count
+        return fetchResults!.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ThumbnailCell else { fatalError("Wrong cell type!") }
-        let asset = assets[indexPath.item]
-        print(asset.pixelHeight)
+        let asset = fetchResults!.object(at: indexPath.item)
         cell.representedAssetIdentifier = asset.localIdentifier
-        imageManager.requestImage(for: asset, targetSize: itemSize!, contentMode: .aspectFit, options: nil) {(object, _) in
+        imageManager!.requestImage(for: asset, targetSize: thumbnailSize!, contentMode: .aspectFit, options: nil) {(object, _) in
             if cell.representedAssetIdentifier == asset.localIdentifier && object != nil {
                     cell.thumbnailView.image = object
             }
@@ -72,11 +57,16 @@ class PhotoLibraryCollectionViewController: UICollectionViewController, UICollec
     
     // Selecting and passing the original image
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let photoAsset = assets[indexPath.item]
-        imageManager.requestImage(for: photoAsset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { (photo, _) in
+        let selectedCell = collectionView.cellForItem(at: indexPath)
+        selectedCell?.layer.borderColor = UIColor.yellow.cgColor
+        selectedCell?.layer.borderWidth =  2
+        
+        let photoAsset = fetchResults!.object(at: indexPath.item)
+        imageManager!.requestImage(for: photoAsset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { (photo, _) in
             if photo != nil {
                 self.selectedPhoto = photo!
                 self.dismiss(animated: true, completion: nil)
+                print(self.selectedPhoto!.size.width)
             }
         }
     }
@@ -91,13 +81,6 @@ class PhotoLibraryCollectionViewController: UICollectionViewController, UICollec
             layout.itemSize = size
         }
     }
-    
-    // MARK: - Navigation
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-    }
-
 
 }
 

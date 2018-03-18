@@ -9,13 +9,14 @@ class MainViewController: UIViewController, ARSCNViewDelegate, UIPopoverPresenta
         return true
     }
     
+    @IBOutlet var choosePhotoButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var notificationLabel: EdgeInsetLabel!
     
     var focalNode: FocalNode?
     private var screenCenter:CGPoint!
     
-    private var image: UIImage? {
+    public var image: UIImage? {
         didSet {
             self.image = self.image?.fixImageOrientation()
         }
@@ -23,9 +24,11 @@ class MainViewController: UIViewController, ARSCNViewDelegate, UIPopoverPresenta
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        notificationLabel.isHidden = true
         configureSceneView()
         setupCamera()
         screenCenter = view.center
+        choosePhotoButton.isEnabled = false
         notificationLabel.isHidden = false
         
     }
@@ -36,8 +39,10 @@ class MainViewController: UIViewController, ARSCNViewDelegate, UIPopoverPresenta
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal]
         configuration.isLightEstimationEnabled = true
-        
         sceneView.session.run(configuration)
+        
+        requestPhotoLibraryAuthorization()
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -120,15 +125,80 @@ class MainViewController: UIViewController, ARSCNViewDelegate, UIPopoverPresenta
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "photoCollectionSegue" {
-            let popoverViewController = segue.destination as! PhotoLibraryCollectionViewController
-            popoverViewController.modalPresentationStyle = .popover
-            popoverViewController.modalTransitionStyle = .coverVertical
-            popoverViewController.popoverPresentationController!.delegate = self
+            let photoLibraryCollectionViewController = segue.destination as! PhotoLibraryCollectionViewController
+            photoLibraryCollectionViewController.modalPresentationStyle = .popover
+            photoLibraryCollectionViewController.modalTransitionStyle = .coverVertical
+            photoLibraryCollectionViewController.popoverPresentationController!.delegate = self
+
+            photoLibraryCollectionViewController.thumbnailSize = self.thumbnailSize
+            photoLibraryCollectionViewController.imageManager = self.imageManager
+            photoLibraryCollectionViewController.fetchResults = self.fetchResults
+
+        }
+        if let popoverController = segue.destination.popoverPresentationController, let button = sender as? UIButton {
+            popoverController.sourceView = button
+            popoverController.sourceRect = button.bounds
+            
         }
     }
 
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return UIModalPresentationStyle.none
     }
+    
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        guard let photoLibararyCollectionViewController = popoverPresentationController.presentedViewController as? PhotoLibraryCollectionViewController else { return }
+        guard let selectedPhoto = photoLibararyCollectionViewController.selectedPhoto else { return }
+        self.image = selectedPhoto
+        print(self.image!.size.width)
+    }
+    
+    // MARK: - Fetching and Caching all images from Library
+   
+    private let imageManager = PHCachingImageManager()
+    private var thumbnailSize: CGSize {
+        get {
+            let side = view.bounds.width / 2
+            return CGSize(width: side, height: side)
+        }
+    }
+    
+    var fetchResults: PHFetchResult<PHAsset>! {
+        didSet {
+            self.fetchResults.enumerateObjects { (asset, _, _) in
+                self.assets.append(asset)
+            }
+        }
+    }
+    
+    private var assets: [PHAsset] = [] {
+        willSet {
+            self.imageManager.stopCachingImagesForAllAssets()
+        }
+        didSet {
+            DispatchQueue.main.async {
+                self.imageManager.startCachingImages(for: self.assets, targetSize: self.thumbnailSize, contentMode: .aspectFit, options: nil)
+            }
+        }
+    }
+    
+    func fetchAllAssets() {
+        DispatchQueue.main.async {
+            let fetchOptions = PHFetchOptions()
+            fetchOptions.includeAllBurstAssets = false
+            fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+            self.fetchResults = PHAsset.fetchAssets(with: .image, options: fetchOptions)
+        }
+    }
+    
 
+    
 }
+
+
+
+
+
+
+
+
