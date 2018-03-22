@@ -26,6 +26,7 @@ extension UIImage {
             transform = transform.translatedBy(x: self.size.height, y: 0);
             transform = transform.scaledBy(x: -1, y: 1);
         }
+        
         if let context: CGContext = CGContext(data: nil, width: Int(self.size.width), height: Int(self.size.height),
                                               bitsPerComponent: self.cgImage!.bitsPerComponent, bytesPerRow: 0,
                                               space: self.cgImage!.colorSpace!,
@@ -91,8 +92,6 @@ class EdgeInsetLabel: UILabel {
     override func drawText(in rect: CGRect) {
         super.drawText(in: UIEdgeInsetsInsetRect(rect, textInsets))
     }
-    
-    
 }
 
 extension EdgeInsetLabel {

@@ -18,8 +18,6 @@ class PhotoLibraryCollectionViewController: UICollectionViewController, UICollec
     
     private var itemSize: CGSize?
     var thumbnailSize: CGSize?
-    
-    var selectedPhoto: UIImage?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,12 +62,13 @@ class PhotoLibraryCollectionViewController: UICollectionViewController, UICollec
         let photoAsset = fetchResults!.object(at: indexPath.item)
         imageManager!.requestImage(for: photoAsset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { (photo, _) in
             if photo != nil {
-                self.selectedPhoto = photo!
+                guard let mainViewController = self.presentingViewController as? MainViewController else { return }
+                mainViewController.image = photo!
                 self.dismiss(animated: true, completion: nil)
-                print(self.selectedPhoto!.size.width)
             }
         }
     }
+    
     
     // Setting cell's size (with UICollectionViewDelegateFlowLayout)
     func updateItemSize() {
@@ -83,4 +82,13 @@ class PhotoLibraryCollectionViewController: UICollectionViewController, UICollec
     }
 
 }
+
+
+// ======================== MARK: - THUMBNAIL CELL ================================
+
+class ThumbnailCell: UICollectionViewCell {
+    @IBOutlet var thumbnailView: UIImageView!
+    var representedAssetIdentifier: String!
+}
+
 
