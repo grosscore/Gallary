@@ -8,8 +8,7 @@ extension MainViewController {
     func configureSceneView() {
         sceneView.delegate = self
         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
-        sceneView.autoenablesDefaultLighting = false
-        sceneView.automaticallyUpdatesLighting = true
+        
         let ARScene = SCNScene()
         sceneView.scene = ARScene
         
@@ -43,10 +42,12 @@ extension MainViewController {
     // MARK: - ARSCNViewDelegate
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+
         guard focalNode == nil else { return }
         let node = FocalNode()
         sceneView.scene.rootNode.addChildNode(node)
         self.focalNode = node
+        
         
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.5, animations: {
@@ -58,13 +59,15 @@ extension MainViewController {
     }
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        guard let focalNode = focalNode else { return }
         let hit = sceneView.hitTest(screenCenter, types: .existingPlane)
-        guard let positionColumn = hit.first?.worldTransform.columns.3 else { return }
+        guard let positionColumn = hit.first?.worldTransform.columns.3, let focalNode = focalNode else { return }
         focalNode.position = SCNVector3(x: positionColumn.x, y: positionColumn.y, z: positionColumn.z)
         
-        guard let lightEstimate = sceneView.session.currentFrame?.lightEstimate, let omniLight = sceneView.scene.rootNode.childNode(withName: "omni", recursively: false), let ambientLight = sceneView.scene.rootNode.childNode(withName: "ambient", recursively: false) else { return }
+
         
+        
+        // Light estimation
+        guard let lightEstimate = sceneView.session.currentFrame?.lightEstimate, let omniLight = sceneView.scene.rootNode.childNode(withName: "omni", recursively: false), let ambientLight = sceneView.scene.rootNode.childNode(withName: "ambient", recursively: false) else { return }
         ambientLight.light?.intensity = lightEstimate.ambientIntensity
         omniLight.light?.intensity = lightEstimate.ambientIntensity
         
@@ -77,16 +80,17 @@ extension MainViewController {
     // MARK: - Nodes
     
     func createFrameNode(){
-        guard let frameScene = SCNScene(named: "painting.scn", inDirectory: "art.scnassets", options: nil) else { print("no such scene or node"); return }
+        guard let frameScene = SCNScene(named: "Frame.scn", inDirectory: "art.scnassets", options: nil) else { print("no such scene or node"); return }
         guard let image = self.image else { print("no image available"); return }
         
         let frameNode = SCNNode()
+        frameNode.name = "frameNode"
         let frameChildNodes = frameScene.rootNode.childNodes
         for node in frameChildNodes {
             frameNode.addChildNode(node)
         }
         
-        if let material = frameNode.childNode(withName: "default", recursively: true)?.geometry?.material(named: "contents") {
+        if let material = frameNode.childNode(withName: "frame", recursively: true)?.geometry?.material(named: "contents") {
             material.diffuse.contents = image
             if image.size.width > image.size.height {
                 let rotateZ = SCNMatrix4MakeRotation(-Float.pi/2, 0, 0, 1)
@@ -103,5 +107,22 @@ extension MainViewController {
         
         self.frameNode = frameNode
     }
+    
+    func createBoundingNode(for node: SCNNode) {
+        let boundingMax = node.boundingBox.max
+        let boundingMin = node.boundingBox.min
+        let width = CGFloat(boundingMax.x - boundingMin.x)
+        let height = CGFloat(boundingMax.y - boundingMin.y)
+        let length = CGFloat(boundingMax.z - boundingMin.z)
+        
+        let boxGeometry = SCNPlane(width: width, height: height)
+//        let material = SCNMaterial()
+//        material.diffuse.contents = UIColor.blue.withAlphaComponent(0.7)
+//        boxGeometry.materials = [material]
+        let boxNode = SCNNode(geometry: boxGeometry)
+        boxNode.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
+        self.boundingNode = boxNode
+    }
+    
     
 }

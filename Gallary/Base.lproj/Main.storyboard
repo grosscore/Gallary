@@ -28,6 +28,7 @@
                                     <constraint firstAttribute="width" constant="80" id="Czk-O7-t7t"/>
                                     <constraint firstAttribute="height" constant="80" id="J6P-nH-9QN"/>
                                 </constraints>
+                                <color key="tintColor" red="0.3411764705882353" green="0.61960784313725492" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" image="plus-"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -42,7 +43,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Initializing tracking. Please, move gently" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sq9-fI-XHq" customClass="EdgeInsetLabel" customModule="Gallary" customModuleProvider="target">
-                                <rect key="frame" x="16" y="80" width="343" height="61"/>
+                                <rect key="frame" x="16" y="80" width="343" height="21"/>
                                 <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="0.84860285660000001" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -65,14 +66,33 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pdw-PY-pOG">
+                                <rect key="frame" x="267" y="577.5" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="0.84999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="kgc-ps-omi"/>
+                                    <constraint firstAttribute="width" constant="60" id="phY-3i-Ypj"/>
+                                </constraints>
+                                <state key="normal" image="delete"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="30"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="deleteNode:" destination="m1d-SY-G8U" eventType="touchUpInside" id="b4n-5g-qrz"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Sq9-fI-XHq" firstAttribute="top" secondItem="HjE-hO-IGN" secondAttribute="top" constant="60" id="33o-Eh-lLA"/>
                             <constraint firstItem="HjE-hO-IGN" firstAttribute="trailing" secondItem="7go-gd-oIo" secondAttribute="trailing" id="3Ye-h6-8dc"/>
+                            <constraint firstItem="Pdw-PY-pOG" firstAttribute="centerY" secondItem="f6T-Xg-oik" secondAttribute="centerY" id="3iu-oo-tVA"/>
                             <constraint firstItem="Sq9-fI-XHq" firstAttribute="leading" secondItem="HjE-hO-IGN" secondAttribute="leading" constant="16" id="G3S-1y-hyb"/>
                             <constraint firstItem="7go-gd-oIo" firstAttribute="leading" secondItem="HjE-hO-IGN" secondAttribute="leading" id="Nqt-NA-BgI"/>
                             <constraint firstItem="HjE-hO-IGN" firstAttribute="trailing" secondItem="Sq9-fI-XHq" secondAttribute="trailing" constant="16" id="Vmi-zz-KAb"/>
+                            <constraint firstItem="Pdw-PY-pOG" firstAttribute="leading" secondItem="f6T-Xg-oik" secondAttribute="trailing" constant="40" id="WH7-u8-1xi"/>
                             <constraint firstItem="HjE-hO-IGN" firstAttribute="bottom" secondItem="f6T-Xg-oik" secondAttribute="bottom" constant="20" id="ZaO-yA-LNo"/>
                             <constraint firstItem="HjE-hO-IGN" firstAttribute="bottom" secondItem="7go-gd-oIo" secondAttribute="bottom" id="Zsb-Fk-EKN"/>
                             <constraint firstItem="7go-gd-oIo" firstAttribute="top" secondItem="DPa-UR-0Xi" secondAttribute="top" id="x7C-1r-Bgm"/>
@@ -82,6 +102,7 @@
                     </view>
                     <connections>
                         <outlet property="choosePhotoButton" destination="f6T-Xg-oik" id="EuW-Kr-uxO"/>
+                        <outlet property="deleteButton" destination="Pdw-PY-pOG" id="Yot-ic-PHK"/>
                         <outlet property="notificationLabel" destination="Sq9-fI-XHq" id="8pk-ja-2Ps"/>
                         <outlet property="sceneView" destination="7go-gd-oIo" id="JwV-96-aMB"/>
                     </connections>
@@ -144,6 +165,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="delete" width="25" height="25"/>
         <image name="plus-" width="32" height="32"/>
     </resources>
 </document>

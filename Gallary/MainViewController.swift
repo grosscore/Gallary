@@ -9,19 +9,24 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         return true
     }
     
-    @IBOutlet var choosePhotoButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet var choosePhotoButton: UIButton!
+    @IBOutlet var deleteButton: UIButton!
     @IBOutlet weak var notificationLabel: EdgeInsetLabel!
     
     var isSelected: Bool = false
+    var isPending: Bool = false
     
     var screenCenter:CGPoint!
     var focalNode: FocalNode?
     var frameNode: SCNNode?
+    var selectedNode: SCNNode?
+    var boundingNode: SCNNode?
     var image: UIImage? {
         didSet {
             self.image = self.image?.fixImageOrientation()
             createFrameNode()
+            self.isPending = true
         }
     }
     
@@ -33,6 +38,9 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         screenCenter = view.center
         notificationLabel.isHidden = false
         addTapGestureRecognizer()
+        
+        selectedNode = nil
+        deleteButton.isHidden = true
     
     }
     
@@ -40,9 +48,11 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         UIApplication.shared.isIdleTimerDisabled = true
         UIApplication.shared.isStatusBarHidden = true
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal]
+        configuration.planeDetection = [.horizontal, .vertical]
         configuration.isLightEstimationEnabled = true
         sceneView.session.run(configuration)
+        sceneView.autoenablesDefaultLighting = false
+        sceneView.automaticallyUpdatesLighting = false
         requestPhotoLibraryAuthorization()
     }
     
@@ -117,6 +127,13 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
             return
         }
     }
+    
+    @IBAction func deleteNode(_ sender: UIButton) {
+        guard selectedNode != nil else { return }
+        selectedNode?.removeFromParentNode()
+        selectedNode = nil
+    }
+    
     
 }
 
