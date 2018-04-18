@@ -1,13 +1,13 @@
 import ARKit
 import SceneKit
 
-extension MainViewController {
+extension MainViewController: ARSCNViewDelegate {
     
     // MARK: - Configure Session
     
     func configureSceneView() {
         sceneView.delegate = self
-        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+        //sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         
         let ARScene = SCNScene()
         sceneView.scene = ARScene
@@ -23,7 +23,7 @@ extension MainViewController {
         ambientLight.type = .ambient
         let ambientNode = SCNNode()
         ambientNode.light = ambientLight
-        ambientNode.position = SCNVector3(0, 5, 0)
+        ambientNode.position = SCNVector3(0, 2, 0)
         ambientNode.name = "ambient"
         
         sceneView.scene.rootNode.addChildNode(omniNode)
@@ -36,18 +36,18 @@ extension MainViewController {
         camera.exposureOffset = -1
         camera.minimumExposure = -1
         camera.maximumExposure = 3
+        sceneView.antialiasingMode = .multisampling4X
         sceneView.preferredFramesPerSecond = 60
     }
     
     // MARK: - ARSCNViewDelegate
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-
-        guard focalNode == nil else { return }
+        
+        guard focalNode == nil  else { return }
         let node = FocalNode()
         sceneView.scene.rootNode.addChildNode(node)
         self.focalNode = node
-        
         
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.5, animations: {
@@ -59,22 +59,30 @@ extension MainViewController {
     }
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        let hit = sceneView.hitTest(screenCenter, types: .existingPlane)
-        guard let positionColumn = hit.first?.worldTransform.columns.3, let focalNode = focalNode else { return }
+        let hit = sceneView.hitTest(screenCenter, types: [.existingPlaneUsingExtent])
+        guard let positionColumn = hit.first?.worldTransform.columns.3, let focalNode = focalNode, let planeAnchor = hit.last?.anchor as? ARPlaneAnchor else { return }
+        let planeNode = self.sceneView.node(for: planeAnchor)
+        
+        if planeAnchor.alignment == .vertical {
+            focalNode.alignVertically()
+            focalNode.eulerAngles.y = planeNode!.eulerAngles.y
+        } else if planeAnchor.alignment == .horizontal {
+            focalNode.alignHorizontally()
+            
+        }
+        
         focalNode.position = SCNVector3(x: positionColumn.x, y: positionColumn.y, z: positionColumn.z)
-        
-
-        
         
         // Light estimation
         guard let lightEstimate = sceneView.session.currentFrame?.lightEstimate, let omniLight = sceneView.scene.rootNode.childNode(withName: "omni", recursively: false), let ambientLight = sceneView.scene.rootNode.childNode(withName: "ambient", recursively: false) else { return }
         ambientLight.light?.intensity = lightEstimate.ambientIntensity
         omniLight.light?.intensity = lightEstimate.ambientIntensity
         
-        // TOO DARK:
-        if lightEstimate.ambientIntensity < 100 {
-            
-        }
+        
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+
     }
     
     // MARK: - Nodes
@@ -93,36 +101,23 @@ extension MainViewController {
         if let material = frameNode.childNode(withName: "frame", recursively: true)?.geometry?.material(named: "contents") {
             material.diffuse.contents = image
             if image.size.width > image.size.height {
-                let rotateZ = SCNMatrix4MakeRotation(-Float.pi/2, 0, 0, 1)
-                let rotateX = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
-                frameNode.transform = SCNMatrix4Mult(rotateZ, rotateX)
-                let rotation = SCNMatrix4MakeRotation(Float.pi / 2, 0, 0, 1)
+                frameNode.categoryBitMask = 2
+                let rotation = SCNMatrix4MakeRotation(Float.pi/2, 0, 0, 1)
                 let mirroring = SCNMatrix4MakeScale(-1, 1, 1)
                 let transform = SCNMatrix4Mult(rotation, mirroring)
                 material.diffuse.contentsTransform = transform
-            } else {
-                frameNode.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
             }
         }
-        
         self.frameNode = frameNode
     }
     
-    func createBoundingNode(for node: SCNNode) {
-        let boundingMax = node.boundingBox.max
-        let boundingMin = node.boundingBox.min
-        let width = CGFloat(boundingMax.x - boundingMin.x)
-        let height = CGFloat(boundingMax.y - boundingMin.y)
-        let length = CGFloat(boundingMax.z - boundingMin.z)
-        
-        let boxGeometry = SCNPlane(width: width, height: height)
-//        let material = SCNMaterial()
-//        material.diffuse.contents = UIColor.blue.withAlphaComponent(0.7)
-//        boxGeometry.materials = [material]
-        let boxNode = SCNNode(geometry: boxGeometry)
-        boxNode.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
-        self.boundingNode = boxNode
+    func node(at position: CGPoint) -> SCNNode? {
+        return sceneView.hitTest(position, options: nil).first(where: { $0.node !== focalNode })?.node
     }
     
+    func createWall() {
+        
+        
+    }
     
 }

@@ -3,7 +3,7 @@ import SceneKit
 import ARKit
 import Photos
 
-class MainViewController: UIViewController, UIPopoverPresentationControllerDelegate, ARSCNViewDelegate {
+class MainViewController: UIViewController, UIPopoverPresentationControllerDelegate {
 
     override var prefersStatusBarHidden: Bool {
         return true
@@ -19,25 +19,39 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     
     var screenCenter:CGPoint!
     var focalNode: FocalNode?
-    var frameNode: SCNNode?
+    var frameNode: SCNNode? {
+        didSet {
+            if selectedNode != nil {
+                frameNode!.position = selectedNode!.worldPosition
+                sceneView.scene.rootNode.addChildNode(frameNode!)
+                selectedNode!.removeFromParentNode()
+                selectedNode = frameNode
+                frameNode = nil
+            } else {
+                isPending = true
+            }
+        }
+    }
     var selectedNode: SCNNode?
     var boundingNode: SCNNode?
     var image: UIImage? {
         didSet {
             self.image = self.image?.fixImageOrientation()
             createFrameNode()
-            self.isPending = true
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         notificationLabel.isHidden = true
         configureSceneView()
         setupCamera()
         screenCenter = view.center
         notificationLabel.isHidden = false
         addTapGestureRecognizer()
+        addPinchGestureRecognizer()
+        addPanGestureRecognizer()
         
         selectedNode = nil
         deleteButton.isHidden = true
@@ -48,7 +62,11 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         UIApplication.shared.isIdleTimerDisabled = true
         UIApplication.shared.isStatusBarHidden = true
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal, .vertical]
+        if #available(iOS 11.3, *) {
+            configuration.planeDetection = [.horizontal, .vertical]
+        } else {
+            configuration.planeDetection = .horizontal
+        }
         configuration.isLightEstimationEnabled = true
         sceneView.session.run(configuration)
         sceneView.autoenablesDefaultLighting = false
@@ -132,6 +150,8 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         guard selectedNode != nil else { return }
         selectedNode?.removeFromParentNode()
         selectedNode = nil
+        deleteButton.isHidden = true
+        focalNode?.isHidden = false
     }
     
     

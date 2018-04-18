@@ -8,7 +8,7 @@ class FocalNode: SCNNode {
     
     private let colorMaterial: SCNMaterial = {
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor.yellow.withAlphaComponent(0.5)
+        material.diffuse.contents = #colorLiteral(red: 0.3137254902, green: 0.5803921569, blue: 0.7764705882, alpha: 1).withAlphaComponent(0.5)
         return material
     }()
     
@@ -54,7 +54,16 @@ class FocalNode: SCNNode {
         addVerticalSegment(dy: dist)
         addVerticalSegment(dy: -dist)
         addCentralPlane()
-        transform = SCNMatrix4MakeRotation(-Float.pi / 2.0, 1.0, 0.0, 0.0)
+    }
+    
+    func alignHorizontally() {
+        transform = SCNMatrix4Identity
+        transform = SCNMatrix4MakeRotation(-.pi/2, 1.0, 0.0, 0.0)
+    }
+    
+    func alignVertically() {
+        transform = SCNMatrix4Identity
+        
     }
     
 }
