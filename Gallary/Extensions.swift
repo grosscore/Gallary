@@ -144,6 +144,17 @@ extension EdgeInsetLabel {
     }
 }
 
+// ==================== EXTENSION: - SCNNODE ====================================
+extension SCNNode {
+    func alignHorizontally() {
+        transform = SCNMatrix4Identity
+        transform = SCNMatrix4MakeRotation(-.pi/2, 1.0, 0.0, 0.0)
+    }
+    func alignVertically() {
+        transform = SCNMatrix4Identity
+    }
+}
+
 // ==================== EXTENSION: - MAINVIEWCONTROLLER =========================
 
 extension MainViewController: GADInterstitialDelegate {

@@ -65,10 +65,11 @@ extension MainViewController: ARSCNViewDelegate {
         focalNode.position = SCNVector3(x: positionColumn.x, y: positionColumn.y, z: positionColumn.z)
         
         if isPending {
-            guard let frame = frameNode else { return  }
+            guard let frame = frameNode, let plane = planeNode else { return  }
             focalNode.isHidden = true
             frame.opacity = 0.6
             sceneView.scene.rootNode.addChildNode(frame)
+            frame.orientation = plane.worldOrientation
             frame.position = SCNVector3(x: positionColumn.x, y: positionColumn.y, z: positionColumn.z)
         }
         

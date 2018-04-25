@@ -56,14 +56,4 @@ class FocalNode: SCNNode {
         addCentralPlane()
     }
     
-    func alignHorizontally() {
-        transform = SCNMatrix4Identity
-        transform = SCNMatrix4MakeRotation(-.pi/2, 1.0, 0.0, 0.0)
-    }
-    
-    func alignVertically() {
-        transform = SCNMatrix4Identity
-        
-    }
-    
 }
