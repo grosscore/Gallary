@@ -18,10 +18,8 @@ extension MainViewController {
             let hit = sceneView.hitTest(screenCenter, types: .existingPlane)
             guard let positionColumn = hit.first?.worldTransform.columns.3, let planeAnchor = hit.first?.anchor as? ARPlaneAnchor, let planeNode = sceneView.node(for: planeAnchor) else { print("wrong position"); return }
             frameNode.eulerAngles = planeNode.eulerAngles
-            if frameNode.categoryBitMask == 2 {
-                frameNode.childNodes.first?.eulerAngles.y = -.pi/2
-            }
             frameNode.position = SCNVector3(positionColumn.x, positionColumn.y, positionColumn.z)
+            frameNode.opacity = 1
             sceneView.scene.rootNode.addChildNode(frameNode)
             
             self.frameNode = nil
@@ -36,18 +34,17 @@ extension MainViewController {
             if selectedNode !== node {
                 focalNode?.isHidden = true
                 selectedNode?.opacity = 1
-                deleteButton.isHidden = false
+                deleteButton.showAnimated()
                 node.opacity = 0.6
                 selectedNode = node
             }
         } else {
             focalNode?.isHidden = false
             selectedNode?.opacity = 1
-            deleteButton.isHidden = true
+            deleteButton.hideAnimated()
             selectedNode = nil
         }
     }
-    
     
     // MARK: - Pinch Gesture
     

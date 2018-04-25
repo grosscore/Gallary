@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import ARKit
 import Photos
+import GoogleMobileAds
 
 // ==================== EXTENSION: UIIMAGE ========================
 extension UIImage {
@@ -67,10 +68,33 @@ extension UIView {
         blurView.layer.cornerRadius = 7
         blurView.frame = self.bounds
         self.insertSubview(blurView, at: 0)
-
     }
 }
 
+// ==================== EXTENSION: UIBUTTON =======================
+
+extension UIButton {
+    func hideAnimated() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.4, animations: {
+                self.alpha = 0.0
+                self.isHidden = true
+            })
+        }
+    }
+    
+    func showAnimated() {
+        DispatchQueue.main.async {
+            if self.isHidden == true {
+                self.alpha = 0
+                self.isHidden = false
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.alpha = 1.0
+                })
+            }
+        }
+    }
+}
 
 // ==================== EXTENSION: UILABEL ========================
 @IBDesignable
@@ -122,7 +146,7 @@ extension EdgeInsetLabel {
 
 // ==================== EXTENSION: - MAINVIEWCONTROLLER =========================
 
-extension MainViewController {
+extension MainViewController: GADInterstitialDelegate {
     
     func requestPhotoLibraryAuthorization() {
         
@@ -158,4 +182,30 @@ extension MainViewController {
         }
     }
     
+    // ADMOB Configuration
+    
+    func adMobConfiguration() {
+        //let bannerID = "ca-app-pub-6051983367608032/5251473946"
+        let testBannerID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.adUnitID = testBannerID
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
+        interstitial = createAndLoadInterstitial()
+        interstitial.delegate = self
+    }
+    
+    fileprivate func createAndLoadInterstitial() -> GADInterstitial {
+        //let interstitialID = "ca-app-pub-6051983367608032/6331254344"
+        let testInterstitialID = "ca-app-pub-3940256099942544/4411468910"
+        let interstitial = GADInterstitial(adUnitID: testInterstitialID)
+        interstitial.load(GADRequest())
+        return interstitial
+    }
+    
+    internal func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        DispatchQueue.main.async {
+            self.interstitial = self.createAndLoadInterstitial()
+        }
+    }
+
 }

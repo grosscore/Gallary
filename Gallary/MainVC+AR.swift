@@ -49,29 +49,37 @@ extension MainViewController: ARSCNViewDelegate {
         sceneView.scene.rootNode.addChildNode(node)
         self.focalNode = node
         
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.5, animations: {
-                self.notificationLabel.alpha = 0.0
-            }, completion: { _ in
-                self.notificationLabel.isHidden = true
-            })
-        }
+        hideNotification()
     }
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         let hit = sceneView.hitTest(screenCenter, types: [.existingPlaneUsingExtent])
         guard let positionColumn = hit.first?.worldTransform.columns.3, let focalNode = focalNode, let planeAnchor = hit.last?.anchor as? ARPlaneAnchor else { return }
         let planeNode = self.sceneView.node(for: planeAnchor)
-        
         if planeAnchor.alignment == .vertical {
             focalNode.alignVertically()
             focalNode.eulerAngles.y = planeNode!.eulerAngles.y
         } else if planeAnchor.alignment == .horizontal {
             focalNode.alignHorizontally()
-            
+        }
+        focalNode.position = SCNVector3(x: positionColumn.x, y: positionColumn.y, z: positionColumn.z)
+        
+        if isPending {
+            guard let frame = frameNode else { return  }
+            focalNode.isHidden = true
+            frame.opacity = 0.6
+            sceneView.scene.rootNode.addChildNode(frame)
+            frame.position = SCNVector3(x: positionColumn.x, y: positionColumn.y, z: positionColumn.z)
         }
         
-        focalNode.position = SCNVector3(x: positionColumn.x, y: positionColumn.y, z: positionColumn.z)
+        //Hide focal node if there is a FrameNode in a sight
+        let hitTestOptions: [SCNHitTestOption: Any] = [ .clipToZRange: true ]
+        let hitTestResult = sceneView.hitTest(screenCenter, options: hitTestOptions)
+        guard (hitTestResult.first(where: { $0.node.parent?.name == "frameNode" || $0.node.name == "frameNode" })?.node) != nil else {
+            focalNode.isHidden = false
+            return
+        }
+        focalNode.isHidden = true
         
         // Light estimation
         guard let lightEstimate = sceneView.session.currentFrame?.lightEstimate, let omniLight = sceneView.scene.rootNode.childNode(withName: "omni", recursively: false), let ambientLight = sceneView.scene.rootNode.childNode(withName: "ambient", recursively: false) else { return }
@@ -81,9 +89,6 @@ extension MainViewController: ARSCNViewDelegate {
         
     }
     
-    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-
-    }
     
     // MARK: - Nodes
     
@@ -115,9 +120,39 @@ extension MainViewController: ARSCNViewDelegate {
         return sceneView.hitTest(position, options: nil).first(where: { $0.node !== focalNode })?.node
     }
     
+    
+    // Create a virtual wall
     func createWall() {
+      
+    }
+    
+    
+    // MARK: - Managing notifications
+    
+    func showNotification(text: String, time: TimeInterval = 6, autohide: Bool = true) {
+        Timer.scheduledTimer(withTimeInterval: time, repeats: false, block: {_ in
+            self.hideNotification()
+        })
         
-        
+        DispatchQueue.main.async {
+            self.notificationLabel.text = text
+            self.notificationLabel.alpha = 0
+            self.notificationLabel.isHidden = false
+            UIView.animate(withDuration: 0.4, animations: {
+                self.notificationLabel.alpha = 1.0
+            })
+        }
+    }
+    
+    fileprivate func hideNotification() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.4, animations: {
+                self.notificationLabel.alpha = 0.0
+            }, completion: { _ in
+                self.notificationLabel.text = ""
+                self.notificationLabel.isHidden = true
+            })
+        }
     }
     
 }

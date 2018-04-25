@@ -2,6 +2,7 @@ import UIKit
 import SceneKit
 import ARKit
 import Photos
+import GoogleMobileAds
 
 class MainViewController: UIViewController, UIPopoverPresentationControllerDelegate {
 
@@ -13,11 +14,16 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     @IBOutlet var choosePhotoButton: UIButton!
     @IBOutlet var deleteButton: UIButton!
     @IBOutlet weak var notificationLabel: EdgeInsetLabel!
+    @IBOutlet weak var captureButton: UIButton!
+    
+    //AdMob variables:
+    @IBOutlet weak var bannerView: GADBannerView!
+    var interstitial: GADInterstitial!
     
     var isSelected: Bool = false
     var isPending: Bool = false
     
-    var screenCenter:CGPoint!
+    var screenCenter: CGPoint!
     var focalNode: FocalNode?
     var frameNode: SCNNode? {
         didSet {
@@ -28,12 +34,14 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
                 selectedNode = frameNode
                 frameNode = nil
             } else {
+                if frameNode?.categoryBitMask == 2 {
+                    frameNode?.childNodes.first?.eulerAngles.y = -.pi/2
+                }
                 isPending = true
             }
         }
     }
     var selectedNode: SCNNode?
-    var boundingNode: SCNNode?
     var image: UIImage? {
         didSet {
             self.image = self.image?.fixImageOrientation()
@@ -56,6 +64,8 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         selectedNode = nil
         deleteButton.isHidden = true
     
+        adMobConfiguration()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,7 +89,6 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         sceneView.session.pause()
     }
     
-
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "photoCollectionSegue" {
@@ -150,10 +159,46 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         guard selectedNode != nil else { return }
         selectedNode?.removeFromParentNode()
         selectedNode = nil
-        deleteButton.isHidden = true
+        deleteButton.hideAnimated()
         focalNode?.isHidden = false
     }
     
+    @IBAction func capturePhoto(_ sender: UIButton) {
+        let snapshot = sceneView.snapshot()
+        try? PHPhotoLibrary.shared().performChangesAndWait {
+            PHAssetChangeRequest.creationRequestForAsset(from: snapshot)
+        }
+        
+        showNotification(text: "Saved", time: 3, autohide: true)
+    }
+    
+    @IBAction func restartSession(_ sender: UIButton) {
+        
+        DispatchQueue.main.async {
+            if self.interstitial.isReady {
+                self.interstitial.present(fromRootViewController: self)
+            }
+        }
+        
+        selectedNode = nil
+        isSelected = false
+        isPending = false
+        frameNode = nil
+        image = nil
+        deleteButton.hideAnimated()
+        for node in sceneView.scene.rootNode.childNodes {
+            if node.name == "frameNode" {
+                node.removeFromParentNode()
+            }
+        }
+        
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.isLightEstimationEnabled = true
+        configuration.planeDetection = [.horizontal, .vertical]
+        sceneView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
+        
+        showNotification(text: "Reinitializing tracking. Please, move gently.")
+    }
     
 }
 

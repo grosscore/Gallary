@@ -67,7 +67,7 @@
                                 </userDefinedRuntimeAttributes>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pdw-PY-pOG">
-                                <rect key="frame" x="267" y="577.5" width="60" height="60"/>
+                                <rect key="frame" x="157" y="467" width="60" height="60"/>
                                 <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="0.84999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="kgc-ps-omi"/>
@@ -83,24 +83,74 @@
                                     <action selector="deleteNode:" destination="m1d-SY-G8U" eventType="touchUpInside" id="b4n-5g-qrz"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IsI-Ze-oJq">
+                                <rect key="frame" x="47" y="577.5" width="60" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="0.84999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="e6H-Rr-Z3b"/>
+                                    <constraint firstAttribute="width" constant="60" id="yqY-NL-7NZ"/>
+                                </constraints>
+                                <state key="normal" image="camera-2"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="30"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="capturePhoto:" destination="m1d-SY-G8U" eventType="touchUpInside" id="3Y3-tW-BVQ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cro-yy-Efd">
+                                <rect key="frame" x="267" y="577.5" width="60" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="0.84999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="R0e-lI-Jez"/>
+                                    <constraint firstAttribute="height" constant="60" id="VNb-Nl-aki"/>
+                                </constraints>
+                                <state key="normal" image="reload"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="30"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="restartSession:" destination="m1d-SY-G8U" eventType="touchUpInside" id="Ezl-X1-VeM"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9ye-od-JCi" customClass="GADBannerView">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="PAx-uQ-MhW"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Sq9-fI-XHq" firstAttribute="top" secondItem="HjE-hO-IGN" secondAttribute="top" constant="60" id="33o-Eh-lLA"/>
                             <constraint firstItem="HjE-hO-IGN" firstAttribute="trailing" secondItem="7go-gd-oIo" secondAttribute="trailing" id="3Ye-h6-8dc"/>
-                            <constraint firstItem="Pdw-PY-pOG" firstAttribute="centerY" secondItem="f6T-Xg-oik" secondAttribute="centerY" id="3iu-oo-tVA"/>
+                            <constraint firstItem="HjE-hO-IGN" firstAttribute="trailing" secondItem="9ye-od-JCi" secondAttribute="trailing" id="47O-22-yD1"/>
+                            <constraint firstItem="f6T-Xg-oik" firstAttribute="leading" secondItem="IsI-Ze-oJq" secondAttribute="trailing" constant="40" id="FIy-f8-zhG"/>
                             <constraint firstItem="Sq9-fI-XHq" firstAttribute="leading" secondItem="HjE-hO-IGN" secondAttribute="leading" constant="16" id="G3S-1y-hyb"/>
+                            <constraint firstItem="cro-yy-Efd" firstAttribute="leading" secondItem="f6T-Xg-oik" secondAttribute="trailing" constant="40" id="GO1-mf-hyZ"/>
+                            <constraint firstItem="IsI-Ze-oJq" firstAttribute="centerY" secondItem="f6T-Xg-oik" secondAttribute="centerY" id="NZJ-po-O33"/>
                             <constraint firstItem="7go-gd-oIo" firstAttribute="leading" secondItem="HjE-hO-IGN" secondAttribute="leading" id="Nqt-NA-BgI"/>
+                            <constraint firstItem="Pdw-PY-pOG" firstAttribute="centerX" secondItem="f6T-Xg-oik" secondAttribute="centerX" id="Pma-cC-AqY"/>
+                            <constraint firstItem="f6T-Xg-oik" firstAttribute="top" secondItem="Pdw-PY-pOG" secondAttribute="bottom" constant="40" id="Sy5-Gc-bh9"/>
                             <constraint firstItem="HjE-hO-IGN" firstAttribute="trailing" secondItem="Sq9-fI-XHq" secondAttribute="trailing" constant="16" id="Vmi-zz-KAb"/>
-                            <constraint firstItem="Pdw-PY-pOG" firstAttribute="leading" secondItem="f6T-Xg-oik" secondAttribute="trailing" constant="40" id="WH7-u8-1xi"/>
+                            <constraint firstItem="9ye-od-JCi" firstAttribute="leading" secondItem="HjE-hO-IGN" secondAttribute="leading" id="ZZU-44-uAR"/>
                             <constraint firstItem="HjE-hO-IGN" firstAttribute="bottom" secondItem="f6T-Xg-oik" secondAttribute="bottom" constant="20" id="ZaO-yA-LNo"/>
                             <constraint firstItem="HjE-hO-IGN" firstAttribute="bottom" secondItem="7go-gd-oIo" secondAttribute="bottom" id="Zsb-Fk-EKN"/>
+                            <constraint firstItem="cro-yy-Efd" firstAttribute="centerY" secondItem="f6T-Xg-oik" secondAttribute="centerY" id="tVz-Ax-XFD"/>
+                            <constraint firstItem="9ye-od-JCi" firstAttribute="top" secondItem="DPa-UR-0Xi" secondAttribute="top" id="wo3-ge-EDl"/>
                             <constraint firstItem="7go-gd-oIo" firstAttribute="top" secondItem="DPa-UR-0Xi" secondAttribute="top" id="x7C-1r-Bgm"/>
                             <constraint firstItem="f6T-Xg-oik" firstAttribute="centerX" secondItem="7go-gd-oIo" secondAttribute="centerX" id="xme-DC-X97"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="HjE-hO-IGN"/>
                     </view>
                     <connections>
+                        <outlet property="bannerView" destination="9ye-od-JCi" id="NLp-i1-3fI"/>
+                        <outlet property="captureButton" destination="IsI-Ze-oJq" id="ObC-Ez-5T7"/>
                         <outlet property="choosePhotoButton" destination="f6T-Xg-oik" id="EuW-Kr-uxO"/>
                         <outlet property="deleteButton" destination="Pdw-PY-pOG" id="Yot-ic-PHK"/>
                         <outlet property="notificationLabel" destination="Sq9-fI-XHq" id="8pk-ja-2Ps"/>
@@ -165,7 +215,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="camera-2" width="25" height="25"/>
         <image name="delete" width="25" height="25"/>
         <image name="frame" width="32" height="32"/>
+        <image name="reload" width="25" height="25"/>
     </resources>
 </document>
