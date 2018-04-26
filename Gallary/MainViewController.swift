@@ -164,9 +164,9 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     }
     
     @IBAction func capturePhoto(_ sender: UIButton) {
-        let snapshot = sceneView.snapshot()
+        let snapshot = sceneView.snapshot().fixImageOrientation()
         try? PHPhotoLibrary.shared().performChangesAndWait {
-            PHAssetChangeRequest.creationRequestForAsset(from: snapshot)
+            PHAssetChangeRequest.creationRequestForAsset(from: snapshot!)
         }
         
         showNotification(text: "Saved", time: 3, autohide: true)

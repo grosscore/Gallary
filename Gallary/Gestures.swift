@@ -15,13 +15,13 @@ extension MainViewController {
         // Add a frameNode to a scene
         if isPending {
             guard let frameNode = self.frameNode else { print("no frame node"); return }
-            let hit = sceneView.hitTest(screenCenter, types: .existingPlane)
-            guard let positionColumn = hit.first?.worldTransform.columns.3, let planeAnchor = hit.first?.anchor as? ARPlaneAnchor, let planeNode = sceneView.node(for: planeAnchor) else { print("wrong position"); return }
-            frameNode.eulerAngles = planeNode.eulerAngles
-            frameNode.position = SCNVector3(positionColumn.x, positionColumn.y, positionColumn.z)
+//            let hit = sceneView.hitTest(screenCenter, types: .existingPlane)
+//            guard let positionColumn = hit.first?.worldTransform.columns.3, let planeAnchor = hit.first?.anchor as? ARPlaneAnchor, let planeNode = sceneView.node(for: planeAnchor) else { print("wrong position"); return }
+//            frameNode.eulerAngles = planeNode.eulerAngles
+//            frameNode.position = SCNVector3(positionColumn.x, positionColumn.y, positionColumn.z)
+//            sceneView.scene.rootNode.addChildNode(frameNode)
             frameNode.opacity = 1
-            sceneView.scene.rootNode.addChildNode(frameNode)
-            
+            frameNode.clone()
             self.frameNode = nil
             self.isPending = false
         }

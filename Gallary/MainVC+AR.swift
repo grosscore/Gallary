@@ -114,6 +114,9 @@ extension MainViewController: ARSCNViewDelegate {
                 material.diffuse.contentsTransform = transform
             }
         }
+        if isPending {
+            self.frameNode?.removeFromParentNode()
+        }
         self.frameNode = frameNode
     }
     
