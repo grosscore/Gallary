@@ -1,7 +1,7 @@
 import ARKit
 import SceneKit
 
-extension MainViewController: ARSCNViewDelegate {
+extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
     
     // MARK: - Configure Session
     
@@ -74,20 +74,32 @@ extension MainViewController: ARSCNViewDelegate {
         }
         
         //Hide focal node if there is a FrameNode in a sight
-        let hitTestOptions: [SCNHitTestOption: Any] = [ .clipToZRange: true ]
-        let hitTestResult = sceneView.hitTest(screenCenter, options: hitTestOptions)
-        guard (hitTestResult.first(where: { $0.node.parent?.name == "frameNode" || $0.node.name == "frameNode" })?.node) != nil else {
-            focalNode.isHidden = false
-            return
+        DispatchQueue.main.async {
+            let isObjectVisible = self.sceneView.scene.rootNode.childNodes.contains { object in
+                guard object.name == "frameNode" else { return false }
+                return self.sceneView.isNode(object, insideFrustumOf: self.sceneView.pointOfView!)
+            }
+            focalNode.isHidden = isObjectVisible ? true : false
         }
-        focalNode.isHidden = true
+        
         
         // Light estimation
         guard let lightEstimate = sceneView.session.currentFrame?.lightEstimate, let omniLight = sceneView.scene.rootNode.childNode(withName: "omni", recursively: false), let ambientLight = sceneView.scene.rootNode.childNode(withName: "ambient", recursively: false) else { return }
         ambientLight.light?.intensity = lightEstimate.ambientIntensity
         omniLight.light?.intensity = lightEstimate.ambientIntensity
         
-        
+    }
+    
+    // Insufficient features
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        switch  camera.trackingState {
+        case .limited(let reason):
+            if reason == .insufficientFeatures {
+                showNotification(text: "The surface has insufficient features or the scene is too dark.")
+            }
+        case .normal: if !notificationLabel.isHidden { hideNotification() }
+        default: break
+        }
     }
     
     

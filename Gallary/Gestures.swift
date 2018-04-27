@@ -58,6 +58,10 @@ extension MainViewController {
             if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
                 selectedNode!.scale = SCNVector3(gestureRecognizer.scale, gestureRecognizer.scale, gestureRecognizer.scale)
             }
+        } else if isPending && frameNode != nil {
+            if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
+                frameNode!.scale = SCNVector3(gestureRecognizer.scale, gestureRecognizer.scale, gestureRecognizer.scale)
+            }
         }
     }
     
