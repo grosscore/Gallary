@@ -97,7 +97,7 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
             if reason == .insufficientFeatures {
                 showNotification(text: "The surface has insufficient features or the scene is too dark.")
             }
-        case .normal: if !notificationLabel.isHidden { hideNotification() }
+        //case .normal: if !notificationLabel.isHidden { hideNotification() }
         default: break
         }
     }
