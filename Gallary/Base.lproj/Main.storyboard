@@ -176,6 +176,10 @@
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
+                        <containerView key="backgroundView" opaque="NO" contentMode="scaleToFill" id="7xS-WW-hXl">
+                            <rect key="frame" x="0.0" y="-44" width="359" height="359"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        </containerView>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" misplaced="YES" reuseIdentifier="thumbnailCell" id="hpo-T2-LTA" customClass="ThumbnailCell" customModule="Gallary">
                                 <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
@@ -205,6 +209,10 @@
                             <outlet property="delegate" destination="uQU-Hp-jER" id="EbH-2Q-Y7V"/>
                         </connections>
                     </collectionView>
+                    <toolbarItems>
+                        <barButtonItem title="Item" id="gso-fw-1Pw"/>
+                        <barButtonItem title="Item" id="xd9-x7-OoI"/>
+                    </toolbarItems>
                     <value key="contentSizeForViewInPopover" type="size" width="359" height="359"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

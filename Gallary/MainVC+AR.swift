@@ -7,10 +7,6 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
     
     func configureSceneView() {
         sceneView.delegate = self
-        //sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
-        
-        let ARScene = SCNScene()
-        sceneView.scene = ARScene
         
         let omniLight = SCNLight()
         omniLight.type = .omni
@@ -28,6 +24,7 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
         
         sceneView.scene.rootNode.addChildNode(omniNode)
         sceneView.scene.rootNode.addChildNode(ambientNode)
+        sceneView.scene.lightingEnvironment.contents = UIImage(named: "environment.jpg")
     }
     
     func setupCamera() {
@@ -87,7 +84,7 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
         guard let lightEstimate = sceneView.session.currentFrame?.lightEstimate, let omniLight = sceneView.scene.rootNode.childNode(withName: "omni", recursively: false), let ambientLight = sceneView.scene.rootNode.childNode(withName: "ambient", recursively: false) else { return }
         ambientLight.light?.intensity = lightEstimate.ambientIntensity
         omniLight.light?.intensity = lightEstimate.ambientIntensity
-        
+        sceneView.scene.lightingEnvironment.intensity = lightEstimate.ambientIntensity / 1000
     }
     
     // Insufficient features
@@ -106,7 +103,7 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
     // MARK: - Nodes
     
     func createFrameNode(){
-        guard let frameScene = SCNScene(named: "Frame.scn", inDirectory: "art.scnassets", options: nil) else { print("no such scene or node"); return }
+        guard let frameScene = SCNScene(named: "Frame2.scn", inDirectory: "art.scnassets", options: nil) else { print("no such scene or node"); return }
         guard let image = self.image else { print("no image available"); return }
         
         let frameNode = SCNNode()
@@ -122,8 +119,11 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
                 frameNode.categoryBitMask = 2
                 let rotation = SCNMatrix4MakeRotation(Float.pi/2, 0, 0, 1)
                 let mirroring = SCNMatrix4MakeScale(-1, 1, 1)
-                let transform = SCNMatrix4Mult(rotation, mirroring)
-                material.diffuse.contentsTransform = transform
+                let offset = SCNMatrix4MakeTranslation(1, 0, 0)
+                let transformWithOffset = SCNMatrix4Mult(rotation, offset)
+                let transformWithMirroring = SCNMatrix4Mult(rotation, mirroring)
+                material.diffuse.contentsTransform = transformWithOffset
+                
             }
         }
         if isPending {
