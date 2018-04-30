@@ -155,6 +155,20 @@ extension SCNNode {
     }
 }
 
+// =================== MARK: - CGPoint extensions
+
+extension CGPoint {
+    /// Extracts the screen space point from a vector returned by SCNView.projectPoint(_:).
+    init(_ vector: SCNVector3) {
+        self.init(x: CGFloat(vector.x), y: CGFloat(vector.y))
+    }
+    
+    /// Returns the length of a point when considered as a vector. (Used with gesture recognizers.)
+    var length: CGFloat {
+        return sqrt(x * x + y * y)
+    }
+}
+
 // ==================== EXTENSION: - MAINVIEWCONTROLLER =========================
 
 extension MainViewController: GADInterstitialDelegate {
@@ -216,6 +230,31 @@ extension MainViewController: GADInterstitialDelegate {
     internal func interstitialDidDismissScreen(_ ad: GADInterstitial) {
         DispatchQueue.main.async {
             self.interstitial = self.createAndLoadInterstitial()
+        }
+    }
+    
+    
+    // Animation of PageControl
+    func showPageControl() {
+        DispatchQueue.main.async {
+            if self.pageControl.isHidden {
+                self.pageControl.alpha = 0
+                self.pageControl.isHidden = false
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.pageControl.alpha = 0.85
+                })
+            }
+        }
+    }
+    
+    func hidePageControl() {
+        DispatchQueue.main.async {
+            if !self.pageControl.isHidden {
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.pageControl.alpha = 0
+                })
+                self.pageControl.isHidden = true
+            }
         }
     }
 

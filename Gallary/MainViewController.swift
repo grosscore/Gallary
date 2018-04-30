@@ -15,13 +15,17 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     @IBOutlet var deleteButton: UIButton!
     @IBOutlet weak var notificationLabel: EdgeInsetLabel!
     @IBOutlet weak var captureButton: UIButton!
+    @IBOutlet weak var pageControl: UIPageControl!
     
     //AdMob variables:
     @IBOutlet weak var bannerView: GADBannerView!
     var interstitial: GADInterstitial!
     
+    //States
     var isSelected: Bool = false
     var isPending: Bool = false
+    
+    let peek = SystemSoundID(1519)
     
     var screenCenter: CGPoint!
     var focalNode: FocalNode?
@@ -38,10 +42,16 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
                     frameNode?.childNodes.first?.eulerAngles.y = -.pi/2
                 }
                 isPending = true
+                showPageControl()
+                panGestureRecognizer?.isEnabled = false
             }
         }
     }
     var selectedNode: SCNNode?
+    
+    var sceneName: String = "Frame1.scn"
+    var index = 1
+    
     var image: UIImage? {
         didSet {
             self.image = self.image?.fixImageOrientation()
@@ -49,6 +59,11 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         }
     }
     
+    //Gestures
+    var panGestureRecognizer: UIPanGestureRecognizer?
+    var swipeLeftRecognizer: UISwipeGestureRecognizer?
+    var swipeRightRecognizer: UISwipeGestureRecognizer?
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -57,13 +72,16 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         setupCamera()
         screenCenter = view.center
         notificationLabel.isHidden = false
+        pageControl.isHidden = true
         addTapGestureRecognizer()
         addPinchGestureRecognizer()
         addPanGestureRecognizer()
+        addSwipeGestureRecognizers()
         
         selectedNode = nil
         deleteButton.isHidden = true
-    
+        
+        
         adMobConfiguration()
         
     }
@@ -160,7 +178,7 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         selectedNode?.removeFromParentNode()
         selectedNode = nil
         deleteButton.hideAnimated()
-        focalNode?.isHidden = false
+        AudioServicesPlaySystemSound(peek)
     }
     
     @IBAction func capturePhoto(_ sender: UIButton) {
@@ -183,6 +201,7 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         selectedNode = nil
         isSelected = false
         isPending = false
+        panGestureRecognizer?.isEnabled = true
         frameNode = nil
         image = nil
         deleteButton.hideAnimated()

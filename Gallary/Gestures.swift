@@ -1,5 +1,6 @@
 import ARKit
 import SceneKit
+import AudioToolbox.AudioServices
 
 extension MainViewController {
     
@@ -11,14 +12,17 @@ extension MainViewController {
     }
     
     @objc func tap(with gestureRecognizer: UITapGestureRecognizer) {
-        
+
         // Add a frameNode to a scene
         if isPending {
             guard let frameNode = self.frameNode else { print("no frame node"); return }
             frameNode.opacity = 1
+            AudioServicesPlaySystemSound(peek)
             frameNode.clone()
             self.frameNode = nil
             self.isPending = false
+            panGestureRecognizer?.isEnabled = true
+            hidePageControl()
         }
         
         //Select an existing node
@@ -27,17 +31,17 @@ extension MainViewController {
         let hitTestResult = sceneView.hitTest(tapLocation, options: hitTestOptions)
         if let node = hitTestResult.first(where: { $0.node.parent?.name == "frameNode" || $0.node.name == "frameNode" })?.node{
             if selectedNode !== node {
-                focalNode?.isHidden = true
                 selectedNode?.opacity = 1
                 deleteButton.showAnimated()
                 node.opacity = 0.6
                 selectedNode = node
+                AudioServicesPlaySystemSound(peek)
             }
         } else {
-            focalNode?.isHidden = false
             selectedNode?.opacity = 1
-            deleteButton.hideAnimated()
             selectedNode = nil
+            deleteButton.hideAnimated()
+            hidePageControl()
         }
     }
     
@@ -63,8 +67,8 @@ extension MainViewController {
     // MARK: - Pan Gesture
     
     func addPanGestureRecognizer() {
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(MainViewController.panToMove(with:)))
-        sceneView.addGestureRecognizer(panGestureRecognizer)
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(MainViewController.panToMove(with:)))
+        sceneView.addGestureRecognizer(panGestureRecognizer!)
     }
     
     @objc func panToMove(with gestureRecognizer: UIPanGestureRecognizer) {
@@ -82,5 +86,44 @@ extension MainViewController {
             
         }
     }
-
+    
+    // MARK: - Swipe Gesture
+    
+    func addSwipeGestureRecognizers() {
+        swipeLeftRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(MainViewController.nextFrame(with:)))
+        swipeRightRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(MainViewController.previousFrame(with:)))
+        swipeLeftRecognizer!.direction = .left
+        swipeRightRecognizer!.direction = .right
+        
+        sceneView.addGestureRecognizer(swipeLeftRecognizer!)
+        sceneView.addGestureRecognizer(swipeRightRecognizer!)
+    }
+    
+    @objc func nextFrame(with gestureRecognizer: UISwipeGestureRecognizer) {
+        index += 1
+        if index > 2 {
+            index = 1
+        }
+        sceneName = "Frame\(index).scn"
+        if isPending {
+            DispatchQueue.main.async {
+                self.pageControl.currentPage = self.index-1
+                self.createFrameNode()
+            }
+        }
+    }
+    
+    @objc func previousFrame(with gestureRecognizer: UISwipeGestureRecognizer) {
+        index -= 1
+        if index < 1 {
+            index = 2
+        }
+        sceneName = "Frame\(index).scn"
+        if isPending {
+            DispatchQueue.main.async {
+                self.pageControl.currentPage = self.index-1
+                self.createFrameNode()
+            }
+        }
+    }
 }

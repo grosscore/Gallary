@@ -103,11 +103,12 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
     // MARK: - Nodes
     
     func createFrameNode(){
-        guard let frameScene = SCNScene(named: "Frame2.scn", inDirectory: "art.scnassets", options: nil) else { print("no such scene or node"); return }
+        guard let frameScene = SCNScene(named: self.sceneName, inDirectory: "art.scnassets", options: nil) else { print("no such scene or node"); return }
         guard let image = self.image else { print("no image available"); return }
         
         let frameNode = SCNNode()
         frameNode.name = "frameNode"
+        
         let frameChildNodes = frameScene.rootNode.childNodes
         for node in frameChildNodes {
             frameNode.addChildNode(node)
@@ -118,17 +119,25 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
             if image.size.width > image.size.height {
                 frameNode.categoryBitMask = 2
                 let rotation = SCNMatrix4MakeRotation(Float.pi/2, 0, 0, 1)
-                let mirroring = SCNMatrix4MakeScale(-1, 1, 1)
-                let offset = SCNMatrix4MakeTranslation(1, 0, 0)
-                let transformWithOffset = SCNMatrix4Mult(rotation, offset)
-                let transformWithMirroring = SCNMatrix4Mult(rotation, mirroring)
-                material.diffuse.contentsTransform = transformWithOffset
-                
+                if sceneName == "Frame1.scn" {
+                    let offset = SCNMatrix4MakeTranslation(1, 0, 0)
+                    let transformWithOffset = SCNMatrix4Mult(rotation, offset)
+                    material.diffuse.contentsTransform = transformWithOffset
+                }
+                if sceneName == "Frame2.scn" {
+                    let mirroring = SCNMatrix4MakeScale(-1, 1, 1)
+                    let transformWithMirroring = SCNMatrix4Mult(rotation, mirroring)
+                    material.diffuse.contentsTransform = transformWithMirroring
+                }
             }
         }
         if isPending {
+            if self.frameNode != nil {
+                frameNode.scale = self.frameNode!.scale
+            }
             self.frameNode?.removeFromParentNode()
         }
+
         self.frameNode = frameNode
     }
     
