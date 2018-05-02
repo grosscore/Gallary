@@ -25,8 +25,6 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     var isSelected: Bool = false
     var isPending: Bool = false
     
-    let peek = SystemSoundID(1519)
-    
     var screenCenter: CGPoint!
     var focalNode: FocalNode?
     var frameNode: SCNNode? {
@@ -175,18 +173,19 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     
     @IBAction func deleteNode(_ sender: UIButton) {
         guard selectedNode != nil else { return }
+        selectedNode?.isHidden = true
         selectedNode?.removeFromParentNode()
         selectedNode = nil
         deleteButton.hideAnimated()
-        AudioServicesPlaySystemSound(peek)
+        AudioServicesPlaySystemSound(1519)
     }
     
     @IBAction func capturePhoto(_ sender: UIButton) {
-        let snapshot = sceneView.snapshot().fixImageOrientation()
+        let snapshot = sceneView.snapshot()
         try? PHPhotoLibrary.shared().performChangesAndWait {
-            PHAssetChangeRequest.creationRequestForAsset(from: snapshot!)
+            PHAssetChangeRequest.creationRequestForAsset(from: snapshot)
         }
-        
+        AudioServicesPlaySystemSound(1108)
         showNotification(text: "Saved", time: 3, autohide: true)
     }
     
@@ -220,11 +219,3 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     }
     
 }
-
-
-
-
-
-
-
-

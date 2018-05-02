@@ -17,7 +17,7 @@ extension MainViewController {
         if isPending {
             guard let frameNode = self.frameNode else { print("no frame node"); return }
             frameNode.opacity = 1
-            AudioServicesPlaySystemSound(peek)
+            AudioServicesPlaySystemSound(1519)
             frameNode.clone()
             self.frameNode = nil
             self.isPending = false
@@ -27,15 +27,15 @@ extension MainViewController {
         
         //Select an existing node
         let tapLocation = gestureRecognizer.location(in: sceneView)
-        let hitTestOptions: [SCNHitTestOption: Any] = [ .clipToZRange: true ]
-        let hitTestResult = sceneView.hitTest(tapLocation, options: hitTestOptions)
+        //let hitTestOptions: [SCNHitTestOption: Any] = [ .clipToZRange: true ]
+        let hitTestResult = sceneView.hitTest(tapLocation, options: nil)
         if let node = hitTestResult.first(where: { $0.node.parent?.name == "frameNode" || $0.node.name == "frameNode" })?.node{
             if selectedNode !== node {
                 selectedNode?.opacity = 1
                 deleteButton.showAnimated()
                 node.opacity = 0.6
                 selectedNode = node
-                AudioServicesPlaySystemSound(peek)
+                AudioServicesPlaySystemSound(1519)
             }
         } else {
             selectedNode?.opacity = 1

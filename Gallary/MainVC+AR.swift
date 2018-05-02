@@ -22,9 +22,17 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
         ambientNode.position = SCNVector3(0, 2, 0)
         ambientNode.name = "ambient"
         
-        sceneView.scene.rootNode.addChildNode(omniNode)
+        let spotLight = SCNLight()
+        spotLight.type = .spot
+        spotLight.spotOuterAngle = 80
+        let spotNode = SCNNode()
+        spotNode.light = spotLight
+        spotNode.position = SCNVector3(0, 5, 0)
+        spotNode.name = "spot"
+        
+        //sceneView.scene.rootNode.addChildNode(omniNode)
         sceneView.scene.rootNode.addChildNode(ambientNode)
-        sceneView.scene.lightingEnvironment.contents = UIImage(named: "environment.jpg")
+        sceneView.scene.rootNode.addChildNode(spotNode)
     }
     
     func setupCamera() {
@@ -46,7 +54,8 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
         sceneView.scene.rootNode.addChildNode(node)
         self.focalNode = node
         
-        hideNotification()
+        showNotification(text: "For better results take some time to scan a surface")
+
     }
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
@@ -81,10 +90,11 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
         
         
         // Light estimation
-        guard let lightEstimate = sceneView.session.currentFrame?.lightEstimate, let omniLight = sceneView.scene.rootNode.childNode(withName: "omni", recursively: false), let ambientLight = sceneView.scene.rootNode.childNode(withName: "ambient", recursively: false) else { return }
+        guard let lightEstimate = sceneView.session.currentFrame?.lightEstimate, let ambientLight = sceneView.scene.rootNode.childNode(withName: "ambient", recursively: false), let spotLight = sceneView.scene.rootNode.childNode(withName: "spot", recursively: false) else { return }
         ambientLight.light?.intensity = lightEstimate.ambientIntensity
-        omniLight.light?.intensity = lightEstimate.ambientIntensity
-        sceneView.scene.lightingEnvironment.intensity = lightEstimate.ambientIntensity / 1000
+        ambientLight.light?.temperature = lightEstimate.ambientColorTemperature
+        spotLight.light?.intensity = lightEstimate.ambientIntensity
+        spotLight.light?.temperature = lightEstimate.ambientColorTemperature
     }
     
     // Insufficient features
@@ -92,7 +102,7 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
         switch  camera.trackingState {
         case .limited(let reason):
             if reason == .insufficientFeatures {
-                showNotification(text: "The surface has insufficient features or the scene is too dark.")
+                showNotification(text: "Please, find a surface with more prominent features")
             }
         //case .normal: if !notificationLabel.isHidden { hideNotification() }
         default: break
@@ -114,10 +124,12 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
             frameNode.addChildNode(node)
         }
         
-        if let material = frameNode.childNode(withName: "frame", recursively: true)?.geometry?.material(named: "contents") {
+        if let material = frameNode.childNode(withName: "frame", recursively: true)?.geometry?.material(named: "contents"), let shadow = frameNode.childNode(withName: "shadow", recursively: true)?.geometry?.material(named: "shadow") {
             material.diffuse.contents = image
             if image.size.width > image.size.height {
                 frameNode.categoryBitMask = 2
+                let offset = SCNMatrix4MakeTranslation(-0.013, 0, 0)
+                shadow.diffuse.contentsTransform = offset
                 let rotation = SCNMatrix4MakeRotation(Float.pi/2, 0, 0, 1)
                 if sceneName == "Frame1.scn" {
                     let offset = SCNMatrix4MakeTranslation(1, 0, 0)
@@ -149,35 +161,6 @@ extension MainViewController: ARSCNViewDelegate, ARSessionObserver {
     // Create a virtual wall
     func createWall() {
       
-    }
-    
-    
-    // MARK: - Managing notifications
-    
-    func showNotification(text: String, time: TimeInterval = 6, autohide: Bool = true) {
-        Timer.scheduledTimer(withTimeInterval: time, repeats: false, block: {_ in
-            self.hideNotification()
-        })
-        
-        DispatchQueue.main.async {
-            self.notificationLabel.text = text
-            self.notificationLabel.alpha = 0
-            self.notificationLabel.isHidden = false
-            UIView.animate(withDuration: 0.4, animations: {
-                self.notificationLabel.alpha = 1.0
-            })
-        }
-    }
-    
-    fileprivate func hideNotification() {
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.4, animations: {
-                self.notificationLabel.alpha = 0.0
-            }, completion: { _ in
-                self.notificationLabel.text = ""
-                self.notificationLabel.isHidden = true
-            })
-        }
     }
     
 }

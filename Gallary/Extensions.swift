@@ -155,7 +155,7 @@ extension SCNNode {
     }
 }
 
-// =================== MARK: - CGPoint extensions
+// =================== EXTENSION: - CGPoint extensions =================================
 
 extension CGPoint {
     /// Extracts the screen space point from a vector returned by SCNView.projectPoint(_:).
@@ -166,6 +166,33 @@ extension CGPoint {
     /// Returns the length of a point when considered as a vector. (Used with gesture recognizers.)
     var length: CGFloat {
         return sqrt(x * x + y * y)
+    }
+}
+
+
+// ==================== EXTENSION: - UIIDEVICEORIENTATION =======================
+
+extension UIInterfaceOrientation {
+    var uiDeviceOrientation: UIDeviceOrientation {
+        get {
+            switch self {
+            case .landscapeLeft:        return .landscapeLeft
+            case .landscapeRight:       return .landscapeRight
+            case .portrait:             return .portrait
+            case .portraitUpsideDown:   return .portraitUpsideDown
+            default:                    return .portrait
+            }
+        }
+    }
+    
+    init(deviceOrientation: UIDeviceOrientation) {
+        switch deviceOrientation {
+        case .landscapeRight:       self = .landscapeRight
+        case .landscapeLeft:        self = .landscapeLeft
+        case .portrait:             self = .portrait
+        case .portraitUpsideDown:   self = .portraitUpsideDown
+        default:                    self = .portrait
+        }
     }
 }
 
@@ -255,6 +282,35 @@ extension MainViewController: GADInterstitialDelegate {
                 })
                 self.pageControl.isHidden = true
             }
+        }
+    }
+    
+    // Managing notifications
+    
+    func showNotification(text: String, time: TimeInterval = 5, autohide: Bool = true) {
+        DispatchQueue.main.async {
+            self.notificationLabel.text = text
+            self.notificationLabel.alpha = 0
+            self.notificationLabel.isHidden = false
+            UIView.animate(withDuration: 0.4, animations: {
+                self.notificationLabel.alpha = 1.0
+            })
+            
+            Timer.scheduledTimer(withTimeInterval: time, repeats: false, block: {_ in
+                self.hideNotification()
+            })
+        }
+        
+    }
+    
+    fileprivate func hideNotification() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.4, animations: {
+                self.notificationLabel.alpha = 0.0
+            }, completion: { _ in
+                self.notificationLabel.text = ""
+                self.notificationLabel.isHidden = true
+            })
         }
     }
 
